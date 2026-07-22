@@ -280,9 +280,10 @@ const App = (() => {
     const models = [OfflineEngine.MODELS.translation, OfflineEngine.MODELS.whisper];
     const storageInfo = await OfflineEngine.getStorageInfo();
 
-    // Show storage info
-    modelStorageInfoEl.textContent =
-      `📊 存储: 已用 ${storageInfo.usedMB}MB / 共 ${storageInfo.quotaMB}MB · 可用 ${storageInfo.availableMB}MB`;
+    // Show storage info with test button
+    modelStorageInfoEl.innerHTML =
+      `📊 存储: 已用 ${storageInfo.usedMB}MB / 共 ${storageInfo.quotaMB}MB · 可用 ${storageInfo.availableMB}MB ` +
+      `<button id="testCdnBtn" style="font-size:11px;padding:2px 8px;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;margin-left:8px;">🔍 测速</button>`;
 
     // Hide whisper card on Chrome 139+ (has native offline STT)
     const showWhisper = !OfflineEngine.supportsLocalSpeechRecognition();
@@ -358,6 +359,27 @@ const App = (() => {
         }
       });
     });
+
+    // CDN connectivity test button
+    const testBtn = document.getElementById('testCdnBtn');
+    if (testBtn) {
+      testBtn.addEventListener('click', async () => {
+        testBtn.disabled = true;
+        testBtn.textContent = '⏳ 检测中...';
+        try {
+          const results = await OfflineEngine.testMirror();
+          const summary = Object.entries(results)
+            .map(([k, v]) => `${k}: ${v === 'ok' ? '✅' : '❌ ' + v}`)
+            .join(' | ');
+          dlog('info', 'CDN 测速: ' + summary);
+          showToast(summary);
+        } catch (e) {
+          dlog('error', '测速失败: ' + e.message);
+        }
+        testBtn.disabled = false;
+        testBtn.textContent = '🔍 测速';
+      });
+    }
   }
 
   function initModelPanel() {

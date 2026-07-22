@@ -68,11 +68,23 @@ const OfflineEngine = (() => {
   async function getPipeline() {
     if (!pipelineFn) {
       const mod = await import('@huggingface/transformers');
-      // Use Chinese mirror for fast model downloads in China.
-      // Remove this line if you're deploying outside China.
+
+      // ── China network optimization ──────────────
+      // Two things are downloaded separately, both need fixing:
+      // 1. Model weights (242MB) — from huggingface.co → mirror to hf-mirror.com
+      // 2. WASM runtime (~8MB) — from jsdelivr CDN → use unpkg instead
+
+      // 1. Model files via Chinese mirror
       mod.env.remoteHost = 'https://hf-mirror.com';
+      // Keep the default path template: {model}/resolve/{revision}/{file}
+
+      // 2. WASM backend files — also need a CDN that works in China
+      //    Default is jsdelivr which is slow. Point to unpkg (same as our import map).
+      mod.env.backends.onnx.wasm.wasmPaths =
+        'https://unpkg.com/@huggingface/transformers@3/dist/';
+
       pipelineFn = mod.pipeline;
-      console.log('[OfflineEngine] transformers.js loaded (mirror: hf-mirror.com)');
+      console.log('[OfflineEngine] Configured: model mirror=hf-mirror.com, wasm=unpkg');
     }
     return pipelineFn;
   }
@@ -86,6 +98,25 @@ const OfflineEngine = (() => {
 
   function getDownloadState(type) {
     return downloadStates[type] || null;
+  }
+
+  // ── Connectivity test ─────────────────────────
+  async function testMirror() {
+    const results = {};
+    const urls = {
+      'hf-mirror.com': 'https://hf-mirror.com/api/status',
+      'huggingface.co': 'https://huggingface.co/api/status',
+      'unpkg CDN': 'https://unpkg.com/@huggingface/transformers@3/package.json',
+    };
+    for (const [name, url] of Object.entries(urls)) {
+      try {
+        const resp = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+        results[name] = resp.ok ? 'ok' : 'slow(' + resp.status + ')';
+      } catch (e) {
+        results[name] = 'fail: ' + (e.name === 'TimeoutError' ? 'timeout' : e.message);
+      }
+    }
+    return results;
   }
 
   // ── Download model ────────────────────────────
@@ -109,32 +140,57 @@ const OfflineEngine = (() => {
     downloadStates[type] = { status: 'downloading', loaded: 0, total: model.size * 1024 * 1024 };
 
     const pipe = await getPipeline();
-    const instance = await pipe(model.task, model.modelId, {
-      progress_callback: (p) => {
-        if (p.status === 'downloading' && p.loaded && p.total) {
-          downloadStates[type] = {
-            status: 'downloading',
-            loaded: p.loaded,
-            total: p.total,
-            percent: Math.round((p.loaded / p.total) * 100),
-          };
-        } else if (p.status === 'progress') {
-          downloadStates[type] = {
-            status: 'loading',
-            percent: Math.round(p.progress || 0),
-          };
-        }
-        if (onProgress) onProgress(downloadStates[type]);
-      },
-    });
 
-    if (type === 'translation') translationPipe = instance;
-    else if (type === 'whisper') whisperPipe = instance;
+    // Try mirror first, fallback to huggingface.co
+    let lastError = null;
+    const hosts = ['https://hf-mirror.com', 'https://huggingface.co'];
 
-    downloadStates[type] = { status: 'ready' };
-    if (onProgress) onProgress({ status: 'ready' });
+    for (const host of hosts) {
+      try {
+        console.log('[OfflineEngine] Trying download from:', host);
 
-    console.log('[OfflineEngine] Model ready:', model.name);
+        const instance = await pipe(model.task, model.modelId, {
+          progress_callback: (p) => {
+            if (p.status === 'downloading' && p.loaded && p.total) {
+              downloadStates[type] = {
+                status: 'downloading',
+                loaded: p.loaded,
+                total: p.total,
+                percent: Math.round((p.loaded / p.total) * 100),
+                host: host,
+              };
+            } else if (p.status === 'progress') {
+              downloadStates[type] = {
+                status: 'loading',
+                percent: Math.round(p.progress || 0),
+              };
+            }
+            if (onProgress) onProgress(downloadStates[type]);
+          },
+        });
+
+        if (type === 'translation') translationPipe = instance;
+        else if (type === 'whisper') whisperPipe = instance;
+
+        downloadStates[type] = { status: 'ready' };
+        if (onProgress) onProgress({ status: 'ready' });
+
+        console.log('[OfflineEngine] Model ready:', model.name, 'from', host);
+        return; // Success!
+      } catch (e) {
+        lastError = e;
+        console.warn('[OfflineEngine] Download failed from', host, ':', e.message);
+        // Reset state for retry
+        downloadStates[type] = { status: 'downloading', loaded: 0, total: model.size * 1024 * 1024 };
+        if (onProgress) onProgress({ status: 'retrying', message: '切换下载源重试...' });
+      }
+    }
+
+    // All mirrors failed
+    const errMsg = lastError ? lastError.message : '所有下载源均失败';
+    downloadStates[type] = { status: 'error', message: errMsg };
+    if (onProgress) onProgress({ status: 'error', message: errMsg });
+    throw new Error(errMsg);
   }
 
   // ── Offline translation ──────────────────────
@@ -235,6 +291,7 @@ const OfflineEngine = (() => {
     translateOffline,
     transcribeOffline,
     getStorageInfo,
+    testMirror,
     getFloresCode: (bcp47) => BCP47_TO_FLORES[bcp47] || 'eng_Latn',
     getFloresName: (code) => FLORES_NAMES[code] || code,
     supportsLocalSpeechRecognition,
