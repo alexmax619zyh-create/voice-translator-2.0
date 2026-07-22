@@ -90,7 +90,7 @@ const OfflineEngine = (() => {
       // URL pattern: {repoRoot}/models/{modelId}/{file}
       // e.g. https://user.github.io/repo/models/zh-en/config.json
       mod.env.remoteHost = getRepoRoot();
-      mod.env.remotePathTemplate = 'models/{model}/{file}';
+      mod.env.remotePathTemplate = 'models/{model}';
 
       console.log('[OfflineEngine] Configured — repo:', mod.env.remoteHost, 'template:', mod.env.remotePathTemplate);
 
