@@ -125,7 +125,7 @@ const Translator = (() => {
     if (from === to) return text;
 
     // Offline-first: use local NLLB-200 model if available
-    if (typeof OfflineEngine !== 'undefined' && OfflineEngine.isModelReady('translation')) {
+    if (typeof OfflineEngine !== 'undefined' && OfflineEngine.hasAnyModel()) {
       try {
         const result = await OfflineEngine.translateOffline(text, sourceLang, targetLang);
         if (result) return result;

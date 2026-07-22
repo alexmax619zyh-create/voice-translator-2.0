@@ -243,7 +243,7 @@ const App = (() => {
 
   // ── Offline status & model panel ──────────────
   function updateOfflineStatus() {
-    const hasTranslation = typeof OfflineEngine !== 'undefined' && OfflineEngine.isModelReady('translation');
+    const hasTranslation = typeof OfflineEngine !== 'undefined' && OfflineEngine.hasAnyModel();
     const hasWhisper = typeof OfflineEngine !== 'undefined' && OfflineEngine.isModelReady('whisper');
     const online = navigator.onLine;
 
@@ -277,19 +277,17 @@ const App = (() => {
       return;
     }
 
-    const models = [OfflineEngine.MODELS.translation, OfflineEngine.MODELS.whisper];
+    // Show language pair models
+    const models = Object.values(OfflineEngine.MODELS);
     const storageInfo = await OfflineEngine.getStorageInfo();
 
     // Show storage info with test button
     modelStorageInfoEl.innerHTML =
       `📊 存储: 已用 ${storageInfo.usedMB}MB / 共 ${storageInfo.quotaMB}MB · 可用 ${storageInfo.availableMB}MB ` +
-      `<button id="testCdnBtn" style="font-size:11px;padding:2px 8px;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;margin-left:8px;">🔍 测速</button>`;
-
-    // Hide whisper card on Chrome 139+ (has native offline STT)
-    const showWhisper = !OfflineEngine.supportsLocalSpeechRecognition();
+      `<button id="testCdnBtn" style="font-size:11px;padding:2px 8px;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;margin-left:8px;">🔍 测速</button>` +
+      `<div style="font-size:10px;color:#999;margin-top:4px;">模型文件需先放入 models/ 目录再上传 GitHub Pages</div>`;
 
     modelCardsEl.innerHTML = models
-      .filter(m => m.id !== 'whisper' || showWhisper)
       .map(m => {
         const isReady = OfflineEngine.isModelReady(m.id);
         const dlState = OfflineEngine.getDownloadState(m.id);
@@ -402,8 +400,8 @@ const App = (() => {
     });
     window.addEventListener('offline', () => {
       updateOfflineStatus();
-      dlog('warn', '⚠️ 网络已断开 — ' + (OfflineEngine.isModelReady('translation') ? '离线模型可用' : '翻译功能将不可用'));
-      if (!OfflineEngine.isModelReady('translation')) {
+      dlog('warn', '⚠️ 网络已断开 — ' + (OfflineEngine.hasAnyModel() ? '离线模型可用' : '翻译功能将不可用'));
+      if (!OfflineEngine.hasAnyModel()) {
         showToast('网络断开且未下载离线模型，翻译不可用');
       }
     });
