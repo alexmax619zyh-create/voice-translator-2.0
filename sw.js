@@ -1,5 +1,5 @@
 // Service Worker — caches all app files for offline/PWA use
-const CACHE = 'voice-translator-v2';
+const CACHE = 'voice-translator-v3';
 
 // CDN origins that host ML models (cache-first for offline use)
 const MODEL_CDNS = [
@@ -41,7 +41,7 @@ self.addEventListener('activate', (e) => {
   // without mismatch. New tabs will pick up the updated SW.
 });
 
-// Fetch — cache-first for models, network-first for app files
+// Fetch — network-first for app files (always get latest), cache-first for models
 self.addEventListener('fetch', (e) => {
   // Skip non-GET and API calls
   if (e.request.method !== 'GET') return;
@@ -72,17 +72,18 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Network-first for app files, fallback to cache
+  // Network-first for app files (HTML/JS/CSS) — always get latest version
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const fetchPromise = fetch(e.request).then((response) => {
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(e.request, clone));
-        }
-        return response;
-      }).catch(() => cached);
-      return cached || fetchPromise;
+    fetch(e.request).then((response) => {
+      // Update cache with fresh version
+      if (response && response.status === 200) {
+        const clone = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(e.request, clone));
+      }
+      return response;
+    }).catch(() => {
+      // Offline fallback: serve from cache
+      return caches.match(e.request);
     })
   );
 });
