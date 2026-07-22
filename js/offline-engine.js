@@ -103,17 +103,24 @@ const OfflineEngine = (() => {
   // ── Connectivity test ─────────────────────────
   async function testMirror() {
     const results = {};
+    // Use simple GET requests to public pages (not API endpoints that need auth)
     const urls = {
-      'hf-mirror.com': 'https://hf-mirror.com/api/status',
-      'huggingface.co': 'https://huggingface.co/api/status',
+      'hf-mirror.com': 'https://hf-mirror.com/Xenova/nllb-200-distilled-600M/resolve/main/config.json',
+      'huggingface.co': 'https://huggingface.co/Xenova/nllb-200-distilled-600M/resolve/main/config.json',
       'unpkg CDN': 'https://unpkg.com/@huggingface/transformers@3/package.json',
     };
     for (const [name, url] of Object.entries(urls)) {
+      const start = Date.now();
       try {
-        const resp = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
-        results[name] = resp.ok ? 'ok' : 'slow(' + resp.status + ')';
+        const resp = await fetch(url, { method: 'GET', signal: AbortSignal.timeout(8000) });
+        const elapsed = Date.now() - start;
+        if (resp.ok) {
+          results[name] = `✅ ${(elapsed / 1000).toFixed(1)}s`;
+        } else {
+          results[name] = `❌ HTTP ${resp.status}`;
+        }
       } catch (e) {
-        results[name] = 'fail: ' + (e.name === 'TimeoutError' ? 'timeout' : e.message);
+        results[name] = '❌ ' + (e.name === 'TimeoutError' ? '超时' : '不通');
       }
     }
     return results;
