@@ -1,0 +1,16 @@
+{
+  "name": "voice-translator",
+  "version": "1.0.0",
+  "description": "语音翻译助手 — 语音输入，自动翻译，支持多语言和方言",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["translator", "voice", "speech", "pwa", "chinese-dialects"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

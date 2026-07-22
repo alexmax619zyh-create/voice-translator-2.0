@@ -1,0 +1,131 @@
+=== 语音翻译助手 — 手机用户部署指南 ===
+
+完整版离线部署 (index.html + JS模块 + PWA)
+支持：离线翻译 | 离线语音识别 | 安装到桌面 | 16种语言
+
+
+============================================
+🏆 方法一: GitHub Pages (推荐，免费，5分钟)
+============================================
+
+1. 注册 GitHub 账号: https://github.com
+
+2. 创建新仓库:
+   - 右上角 + → New repository
+   - Repository name: voice-translator
+   - ⚠️ 必须选 Public (Private 需付费才能用 Pages)
+   - 点击 Create repository
+
+3. 上传所有文件:
+   - 把整个 voice-translator 文件夹里的内容全部拖进去:
+     ✅ index.html
+     ✅ manifest.json
+     ✅ sw.js
+     ✅ server.js (GitHub Pages 不需要，但留着无妨)
+     ✅ css/ 文件夹
+     ✅ js/ 文件夹 (含 offline-engine.js)
+     ✅ icon-192.png, icon-512.png, icon-512-maskable.png
+   - 点击 Commit changes
+
+4. 开启 GitHub Pages:
+   - 仓库页面 → Settings → Pages
+   - Source: "Deploy from a branch"
+   - Branch: main → / (root) → Save
+   - 等待 1-2 分钟
+
+5. 获取链接:
+   - Settings → Pages 页面顶部会显示:
+     ✅ Your site is live at https://你的用户名.github.io/voice-translator/
+
+6. 把链接发给手机用户
+
+
+============================================
+📱 手机用户操作流程
+============================================
+
+① 在手机上打开收到的链接 (https://xxx.github.io/voice-translator/)
+
+② 安装到桌面:
+   - Chrome: 右上角 ⋮ → 添加到主屏幕
+   - Safari: 底部分享按钮 → 添加到主屏幕
+   - 安装后以独立 App 形式运行，无浏览器地址栏
+
+③ ⚠️ 首次使用需下载离线翻译模型 (约 242MB):
+   - 确保连接 WiFi
+   - 点击页面上的 "📦 管理离线模型" 按钮
+   - 点击翻译模型旁的 "下载" 按钮
+   - 等待下载完成（进度条走满）
+   - 看到绿色边框 + "离线就绪" 即完成
+
+④ 下载完成后：
+   - 🟢 顶部指示灯变绿
+   - 断网也能正常翻译
+   - 语音识别 (Chrome 浏览器支持离线语音)
+
+⑤ 日常使用：
+   - 点击桌面上的 "翻译助手" 图标
+   - 点击麦克风说话 → 自动翻译 → 朗读
+
+
+============================================
+🔧 方法二: Vercel / Netlify (备选)
+============================================
+
+Vercel: https://vercel.com
+  → New Project → 导入 GitHub 仓库 → Deploy
+
+Netlify: https://netlify.com
+  → 拖拽整个文件夹到网页 → Deploy
+
+Cloudflare Pages: https://pages.cloudflare.com
+  → 连接 GitHub → 选择仓库 → Deploy
+
+都支持自定义域名和自动 HTTPS。
+
+
+============================================
+🏠 方法三: 局域网 (同一 WiFi 下使用)
+============================================
+
+1. 电脑双击 "启动翻译助手.vbs"
+2. 确保手机和电脑连同一个 WiFi
+3. 服务器窗口会显示局域网 IP 地址
+4. 手机浏览器访问 http://192.168.x.x:8080
+5. 手机浏览器菜单 → 添加到主屏幕
+
+不需要部署到外网，适合在家使用。
+
+
+============================================
+📦 离线模型说明
+============================================
+
+翻译模型 NLLB-200:  ~242MB (覆盖全部16种语言)
+语音模型 Whisper:    ~120MB (可选，非Chrome浏览器备用)
+
+- 模型下载后存储在浏览器缓存中
+- 仅首次使用需下载，后续秒开
+- 所有翻译在手机本地完成，不联网不泄露隐私
+- 如需删除模型释放空间，进入"管理离线模型"→ 删除
+
+
+============================================
+⚠️ 常见问题
+============================================
+
+Q: 为什么需要 HTTPS?
+A: PWA 安装和语音识别要求 HTTPS 或 localhost。
+   GitHub Pages / Vercel 自动提供 HTTPS。
+
+Q: 模型下载太慢?
+A: 模型托管在 Hugging Face CDN，建议使用 WiFi 下载。
+   下载一次后永久缓存。
+
+Q: iOS Safari 能用吗?
+A: 可以。但离线语音识别仅 Chrome 139+ 支持。
+   iOS 用户可下载 Whisper 模型作为备用。
+
+Q: 可以绑定自己的域名吗?
+A: 可以。GitHub Pages Settings → Custom domain。
+   需要域名解析到 GitHub Pages IP。
