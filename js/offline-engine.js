@@ -83,12 +83,19 @@ const OfflineEngine = (() => {
     if (!pipelineFn) {
       const mod = await import('@huggingface/transformers');
 
-      // Point WASM to unpkg (the only CDN that works from China)
+      // WASM backend files from unpkg (the only CDN that works from China)
       mod.env.backends.onnx.wasm.wasmPaths =
         'https://unpkg.com/@huggingface/transformers@3/dist/';
 
+      // Point model downloads to our own GitHub Pages (no external CDN!)
+      mod.env.remoteHost = getModelBaseUrl();
+      mod.env.remotePathTemplate = '{model}/{file}';
+      // Disable HF token requirement for public models
+      mod.env.useFSCache = false;
+
+      console.log('[OfflineEngine] Configured — models:', mod.env.remoteHost);
+
       pipelineFn = mod.pipeline;
-      console.log('[OfflineEngine] transformers.js loaded, wasm=unpkg');
     }
     return pipelineFn;
   }
@@ -152,17 +159,24 @@ const OfflineEngine = (() => {
 
     downloadStates[key] = { status: 'downloading', loaded: 0, total: pair.size * 1024 * 1024 };
 
-    const baseUrl = getModelBaseUrl();
     const pipe = await getPipeline();
+    const configUrl = getModelBaseUrl() + '/' + pair.modelId + '/config.json';
+    console.log('[OfflineEngine] Loading model, config URL:', configUrl);
 
-    // Configure to load from our own GitHub Pages
-    pipe.env = pipe.env || {};
-    // Point to self-hosted models
-    const { env } = await import('@huggingface/transformers');
-    env.remoteHost = baseUrl;
-    env.remotePathTemplate = '{model}/{file}';
-
-    console.log('[OfflineEngine] Loading model from:', baseUrl + '/' + pair.modelId);
+    // Quick check: is the config file reachable?
+    try {
+      const testResp = await fetch(configUrl, { method: 'HEAD' });
+      if (!testResp.ok) {
+        throw new Error(`Config not reachable: HTTP ${testResp.status} — ${configUrl}`);
+      }
+      console.log('[OfflineEngine] Config file OK:', configUrl);
+    } catch (e) {
+      const msg = '模型文件访问失败: ' + configUrl + ' — ' + e.message;
+      console.error('[OfflineEngine]', msg);
+      downloadStates[key] = { status: 'error', message: msg };
+      if (onProgress) onProgress({ status: 'error', message: msg });
+      throw new Error(msg);
+    }
 
     try {
       const instance = await pipe(pair.task, pair.modelId, {
