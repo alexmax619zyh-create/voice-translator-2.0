@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>语音翻译助手</title>
+<meta name="theme-color" content="#4F46E5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="翻译助手">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/png;base64,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">
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#4F46E5;--primary-light:#818CF8;--primary-dark:#3730A3;--success:#10B981;--danger:#EF4444;--warning:#F59E0B;--bg:#F8FAFC;--card-bg:#FFFFFF;--text:#1E293B;--text-secondary:#64748B;--text-muted:#94A3B8;--border:#E2E8F0;--shadow:0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:16px;--radius-sm:10px;--transition:0.2s ease}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.app-container{max-width:480px;margin:0 auto;padding:16px;min-height:100vh}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px}
+.app-header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--primary),#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-actions{display:flex;align-items:center;gap:6px}
+.install-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.install-btn:hover{background:#EEF2FF;border-color:var(--primary)}
+.mode-badge{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.5px}
+.mode-badge.auto{background:#D1FAE5;color:#065F46}
+.browser-warning{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);margin:8px 0;font-size:13px;line-height:1.5}
+.browser-warning.file-warn{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
+.browser-warning.browser-hint{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E}
+.warning-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.warning-content strong{display:block;margin-bottom:2px}
+.lang-bar{display:flex;align-items:center;gap:8px;padding:12px 0}
+.lang-item{flex:1;display:flex;flex-direction:column;gap:4px}
+.lang-label{font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.lang-select{padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--card-bg);color:var(--text);cursor:pointer;transition:var(--transition);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.lang-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,0.1)}
+.swap-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);background:var(--card-bg);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;margin-top:16px}
+.swap-btn:hover{border-color:var(--primary);background:#EEF2FF}
+.swap-btn:active{transform:scale(0.95) rotate(180deg)}
+.main-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;margin-bottom:20px}
+.text-section{padding:20px;min-height:100px}
+.source-section{background:#FAFBFC;border-bottom:1px solid var(--border)}
+.target-section{background:#F0F9FF}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-title{font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.section-actions{display:flex;gap:4px}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:none;background:transparent;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.icon-btn:hover{background:rgba(0,0,0,0.06)}
+.icon-btn:active{transform:scale(0.92)}
+.text-display{font-size:18px;line-height:1.7;word-break:break-word;min-height:40px;transition:all 0.2s ease}
+.text-display.listening-indicator{color:var(--primary);font-style:italic}
+.text-display.listening-indicator::after{content:'|';animation:blink 0.8s step-end infinite;color:var(--primary);font-weight:700}
+@keyframes blink{50%{opacity:0}}
+.placeholder{color:var(--text-muted);font-style:italic}
+.detected-lang{font-size:11px;color:var(--primary);margin-top:8px;font-weight:600}
+.divider{display:flex;align-items:center;padding:0 20px;position:relative}
+.divider-line{flex:1;height:1px;background:var(--border)}
+.divider-icon{padding:0 12px;font-size:18px;color:var(--text-muted);transition:var(--transition)}
+.divider-icon.translating{animation:spin 0.8s linear infinite;color:var(--primary)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mic-section{display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 0 20px}
+.mic-status{font-size:13px;color:var(--text-secondary);font-weight:500}
+.mic-btn{width:80px;height:80px;border-radius:50%;border:none;background:var(--primary);color:white;font-size:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(79,70,229,0.4);transition:all 0.3s ease;position:relative}
+.mic-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(79,70,229,0.5)}
+.mic-btn:active{transform:scale(0.95)}
+.mic-btn.listening{background:var(--danger);box-shadow:0 4px 14px rgba(239,68,68,0.4);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)}50%{box-shadow:0 0 0 20px rgba(239,68,68,0)}}
+.mic-icon{position:relative;z-index:1}
+.mic-hint{font-size:12px;color:var(--text-muted)}.text-input-row{display:flex;gap:6px;width:100%;max-width:300px;margin-top:8px}.text-input{flex:1;padding:10px 14px;border:2px solid var(--border);border-radius:22px;font-size:15px;outline:none;transition:var(--transition)}.text-input:focus{border-color:var(--primary)}.text-send-btn{width:44px;height:44px;border-radius:50%;border:none;background:var(--primary);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.audio-meter{width:100%;max-width:260px;margin-top:6px}
+.meter-bar{height:6px;border-radius:3px;background:#E2E8F0;transition:width 0.08s ease;width:0%;min-width:0}
+.meter-bar.active{background:linear-gradient(90deg,#10B981,#F59E0B,#EF4444);background-size:260px 6px;background-position:left}
+.meter-label{font-size:10px;color:var(--text-muted)}
+.meter-row{display:flex;align-items:center;justify-content:space-between;margin-top:4px;gap:8px}
+.mic-device-select{font-size:10px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--card-bg);color:var(--text-secondary);max-width:140px;cursor:pointer}
+.history-section{margin-top:8px;padding-bottom:40px}
+.history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.history-header h3{font-size:16px;font-weight:700}
+.text-btn{background:none;border:none;color:var(--danger);font-size:13px;cursor:pointer;font-weight:500}
+.text-btn:hover{text-decoration:underline}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-empty{text-align:center;color:var(--text-muted);padding:30px;font-size:14px}
+.history-item{background:var(--card-bg);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow);cursor:pointer;transition:var(--transition)}
+.history-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.history-item .hi-source{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
+.history-item .hi-target{font-size:16px;color:var(--text);font-weight:600}
+.history-item .hi-time{font-size:11px;color:var(--text-muted);margin-top:6px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:white;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:500;z-index:1000;transition:transform 0.3s ease;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.api-settings{background:var(--card-bg);border:2px solid var(--primary);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;animation:slideDown 0.25s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.api-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-weight:700;font-size:15px}
+.api-body{display:flex;flex-direction:column;gap:8px}
+.api-hint{font-size:12px;color:var(--text-secondary);line-height:1.6;margin:0}
+.api-hint a{color:var(--primary)}
+.api-label{font-size:12px;font-weight:600;color:var(--text);margin-top:4px}
+.api-input{padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:monospace;transition:var(--transition)}
+.api-input:focus{outline:none;border-color:var(--primary)}
+.api-save-btn{margin-top:8px;padding:10px;border:none;border-radius:8px;background:var(--primary);color:white;font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.api-save-btn:hover{background:var(--primary-dark)}
+.api-status{font-size:12px;text-align:center;font-weight:600}
+.api-status.ok{color:var(--success)}
+.api-status.error{color:var(--danger)}.voice-row{display:flex;align-items:center;gap:6px;padding:0 20px 12px}.voice-label{font-size:11px;color:var(--text-muted);white-space:nowrap}.voice-select{flex:1;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--card-bg);color:var(--text-secondary);cursor:pointer;max-width:180px}
+.debug-panel{background:#1E293B;border-radius:var(--radius-sm);padding:12px;margin-top:12px;margin-bottom:40px;font-family:monospace;font-size:11px;color:#E2E8F0;max-height:200px;overflow-y:auto}
+.debug-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-weight:700;font-size:12px}
+.debug-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:#334155;color:#94A3B8}
+.debug-badge.ok{background:#065F46;color:#6EE7B7}
+.debug-badge.warn{background:#78350F;color:#FCD34D}
+.debug-badge.error{background:#7F1D1D;color:#FCA5A5}
+.debug-log{line-height:1.7;word-break:break-all}
+.debug-log .log-line{padding:1px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.debug-log .log-line.error{color:#FCA5A5}
+.debug-log .log-line.warn{color:#FCD34D}
+.debug-log .log-line.success{color:#6EE7B7}
+@media(max-width:360px){.app-container{padding:10px}.app-header h1{font-size:18px}.text-display{font-size:16px}.mic-btn{width:68px;height:68px;font-size:30px}}
+@media(min-width:768px){.app-container{padding:24px}.main-card{border-radius:20px}.text-section{padding:24px}}
+.welcome-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#4F46E5,#7C3AED);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;transition:opacity 0.5s,visibility 0.5s}.welcome-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.welcome-icon{font-size:80px;margin-bottom:24px;animation:bounce 1s infinite}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}.welcome-title{font-size:28px;font-weight:800;margin-bottom:12px;line-height:1.3}.welcome-sub{font-size:17px;opacity:0.9;margin-bottom:32px;line-height:1.5}.welcome-arrow{font-size:40px;animation:pointUp 1s infinite}@keyframes pointUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}.welcome-btn{background:#fff;color:#4F46E5;border:none;padding:16px 40px;border-radius:30px;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform 0.2s}.welcome-btn:active{transform:scale(0.95)}.welcome-small{font-size:14px;opacity:0.7;margin-top:20px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="welcome-overlay" id="welcomeOverlay">
+<div class="welcome-icon">🎤</div>
+<div class="welcome-title" id="welcomeTitle">需要使用麦克风</div>
+<div class="welcome-sub" id="welcomeSub">点击下方按钮后<br>在弹出的提示中点击<b>「允许」</b></div>
+<div class="welcome-arrow">👆</div>
+<button class="welcome-btn" id="welcomeBtn">点我开始</button>
+<div class="welcome-small">只需允许一次<br>以后自动使用</div>
+</div>
+<div class="app-container">
+<header class="app-header">
+<h1>🌐 语音翻译助手</h1>
+<div class="header-actions">
+<button id="installBtn" class="install-btn" title="安装到桌面" style="display:none">📲</button>
+<span class="mode-badge auto">自动</span>
+</div>
+</header>
+<div id="browserWarning" class="browser-warning" style="display:none">
+<span class="warning-icon">⚠️</span>
+<div class="warning-content"><strong id="warningTitle"></strong><span id="warningMsg"></span></div>
+</div>
+<div class="lang-bar">
+<div class="lang-item source">
+<span class="lang-label">源语言</span>
+<select id="sourceLang" class="lang-select">
+<option value="auto">自动检测</option>
+<optgroup label="中文">
+<option value="zh-CN" selected>中文普通话</option>
+<option value="zh-HK">粤语 (廣東話)</option>
+<option value="zh-TW">中文台湾</option>
+</optgroup>
+<optgroup label="方言 (需配置API)">
+<option value="dialect:sichuan">四川话 (百度API)</option>
+<option value="dialect:cantonese">粤语方言 (百度API)</option>
+<option value="dialect:henan">河南话 (需讯飞)</option>
+<option value="dialect:shanghai">上海话 (需讯飞)</option>
+</optgroup>
+<optgroup label="常用语言">
+<option value="en-US">English</option>
+<option value="ja-JP">日本語</option>
+<option value="ko-KR">한국어</option>
+<option value="fr-FR">Français</option>
+<option value="es-ES">Español</option>
+<option value="de-DE">Deutsch</option>
+<option value="it-IT">Italiano</option>
+<option value="pt-BR">Português</option>
+<option value="ru-RU">Русский</option>
+<option value="ar-SA">العربية</option>
+<option value="th-TH">ไทย</option>
+<option value="vi-VN">Tiếng Việt</option>
+<option value="hi-IN">हिन्दी</option>
+<option value="nl-NL">Nederlands</option>
+<option value="tr-TR">Türkçe</option>
+</optgroup>
+</select>
+</div>
+<button id="swapBtn" class="swap-btn" title="切换语言">⇄</button>
+<div class="lang-item target">
+<span class="lang-label">目标语言</span>
+<select id="targetLang" class="lang-select">
+<option value="en">English</option>
+<option value="zh-CN">中文</option>
+<option value="ja">日本語</option>
+<option value="ko">한국어</option>
+<option value="fr">Français</option>
+<option value="es">Español</option>
+<option value="de">Deutsch</option>
+<option value="it">Italiano</option>
+<option value="pt">Português</option>
+<option value="ru">Русский</option>
+<option value="ar">العربية</option>
+<option value="th">ไทย</option>
+<option value="vi">Tiếng Việt</option>
+<option value="hi">हिन्दी</option>
+<option value="nl">Nederlands</option>
+<option value="tr">Türkçe</option>
+</select>
+</div>
+</div>
+<div class="main-card">
+<div class="text-section source-section">
+<div class="section-header"><span class="section-title">🎤 识别结果</span><button id="copySourceBtn" class="icon-btn" title="复制">📋</button></div>
+<div id="sourceText" class="text-display"><span class="placeholder">点击下方麦克风开始说话...</span></div>
+<div id="detectedLang" class="detected-lang"></div>
+</div>
+<div class="divider"><div class="divider-line"></div><span id="translateStatus" class="divider-icon">↓</span><div class="divider-line"></div></div>
+<div class="text-section target-section">
+<div class="section-header"><span class="section-title">📝 翻译结果</span><div class="section-actions"><button id="speakBtn" class="icon-btn" title="朗读">🔊</button><button id="copyTargetBtn" class="icon-btn" title="复制">📋</button></div></div>
+<div id="targetText" class="text-display"><span class="placeholder">翻译将在这里显示...</span></div>
+<div class="voice-row"><span class="voice-label">🔊 朗读声音</span><select id="voiceSel" class="voice-select"><option value="default">默认声音</option></select></div>
+</div>
+</div>
+<div class="mic-section">
+<div id="micStatus" class="mic-status">点击开始录音</div>
+<button id="micBtn" class="mic-btn" title="开始录音"><span class="mic-icon">🎙️</span></button>
+<div class="mic-hint">点击后说话，说完再次点击停止</div>
+<div class="text-input-row"><input id="textInput" class="text-input" placeholder="或者在这里打字，按回车翻译..." autocomplete="off"><button id="textSendBtn" class="text-send-btn">发送</button></div>
+<div class="audio-meter" id="audioMeter">
+<div class="meter-bar" id="meterBar"></div>
+<div class="meter-row">
+<span class="meter-label" id="meterLabel">麦克风音量</span>
+<select id="micDeviceSelect" class="mic-device-select"><option value="">默认麦克风</option></select>
+</div>
+</div>
+</div>
+<div class="history-section">
+<div class="history-header"><h3>📜 翻译记录</h3><button id="clearHistoryBtn" class="text-btn">清空</button></div>
+<div id="historyList" class="history-list"><div class="history-empty">暂无翻译记录</div></div>
+</div>
+<div class="debug-panel" id="debugPanel">
+<div class="debug-header"><span>🔧 诊断信息</span><span id="browserInfo" class="debug-badge"></span></div>
+<div id="debugLog" class="debug-log"></div>
+</div>
+<div class="api-settings" id="apiSettings" style="display:none">
+<div class="api-header"><span>🔑 API 设置</span><button id="apiCloseBtn" class="icon-btn" title="关闭">✕</button></div>
+<div class="api-body">
+<p class="api-hint">方言识别需要百度语音API（免费5万次/天）</p>
+<p class="api-hint">1. 访问 <a href="https://console.bce.baidu.com/ai/#/ai/speech/overview/index" target="_blank">百度AI开放平台</a><br>2. 创建应用 → 领取免费资源 → API Key 和 Secret Key</p>
+<label class="api-label">Baidu API Key</label>
+<input id="baiduApiKey" class="api-input" placeholder="输入API Key..." autocomplete="off">
+<label class="api-label">Baidu Secret Key</label>
+<input id="baiduSecretKey" class="api-input" type="password" placeholder="输入Secret Key..." autocomplete="off">
+<button id="apiSaveBtn" class="api-save-btn">💾 保存</button>
+<span id="apiStatus" class="api-status"></span>
+</div>
+</div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+// ─── Translator Module ──────────────────────
+const Translator=(()=>{const M={zhCN:{name:'中文普通话',iso:'zh'},zhHK:{name:'粤语',iso:'zh'},zhTW:{name:'中文台湾',iso:'zh'},enUS:{name:'English',iso:'en'},jaJP:{name:'日本語',iso:'ja'},koKR:{name:'한국어',iso:'ko'},frFR:{name:'Français',iso:'fr'},esES:{name:'Español',iso:'es'},deDE:{name:'Deutsch',iso:'de'},itIT:{name:'Italiano',iso:'it'},ptBR:{name:'Português',iso:'pt'},ruRU:{name:'Русский',iso:'ru'},arSA:{name:'العربية',iso:'ar'},thTH:{name:'ไทย',iso:'th'},viVN:{name:'Tiếng Việt',iso:'vi'},hiIN:{name:'हिन्दी',iso:'hi'},nlNL:{name:'Nederlands',iso:'nl'},trTR:{name:'Türkçe',iso:'tr'},en:{name:'English',iso:'en'},ja:{name:'日本語',iso:'ja'},ko:{name:'한국어',iso:'ko'},fr:{name:'Français',iso:'fr'},es:{name:'Español',iso:'es'},de:{name:'Deutsch',iso:'de'},it:{name:'Italiano',iso:'it'},pt:{name:'Português',iso:'pt'},ru:{name:'Русский',iso:'ru'},ar:{name:'العربية',iso:'ar'},th:{name:'ไทย',iso:'th'},vi:{name:'Tiếng Việt',iso:'vi'},hi:{name:'हिन्दी',iso:'hi'},nl:{name:'Nederlands',iso:'nl'},tr:{name:'Türkçe',iso:'tr'}}
+function D(t){if(!t||!t.trim())return null;const s=t.trim();let c=0,h=0,k=0,n=0,l=0,y=0,a=0,T=0,d=0
+for(const ch of s){const co=ch.codePointAt(0)
+if((co>=0x4E00&&co<=0x9FFF)||(co>=0x3400&&co<=0x4DBF))c++
+else if(co>=0x3040&&co<=0x309F)h++
+else if(co>=0x30A0&&co<=0x30FF)k++
+else if(co>=0xAC00&&co<=0xD7AF)n++
+else if(co>=0x0400&&co<=0x04FF)y++
+else if(co>=0x0600&&co<=0x06FF)a++
+else if(co>=0x0E00&&co<=0x0E7F)T++
+else if(co>=0x0900&&co<=0x097F)d++
+else if((co>=0x0041&&co<=0x005A)||(co>=0x0061&&co<=0x007A))l++}
+const total=c+h+k+n+l+y+a+T+d;if(total===0)return null
+if(T/total>0.3)return'th-TH';if(a/total>0.3)return'ar-SA';if(d/total>0.3)return'hi-IN';if(y/total>0.3)return'ru-RU'
+if(c/total>0.3){if((h+k)/total>0.15)return'ja-JP';return'zh-CN'}
+if(n/total>0.3)return'ko-KR';if((h+k)/total>0.2)return'ja-JP'
+if(l/total>0.5)return'en-US';return null}
+function N(c){return(M[c]&&M[c].name)||c}
+function L(c){return(M[c]&&M[c].iso)||c.split('-')[0]}
+async function T(text,sl,tl){if(!text||!text.trim())return'';const f=L(sl),t=L(tl);if(f===t)return text
+try{const r=await MM(text,f,t);if(r)return r}catch(_){}
+try{const r=await GT(text,f,t);if(r)return r}catch(_){}
+return'[翻译失败: '+text+']'}
+async function MM(text,f,t){const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+f+'|'+t;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();if(d.responseStatus===200||d.responseStatus===403)return d.responseData.translatedText||'';throw new Error('status '+d.responseStatus)}
+async function GT(text,f,t){const u='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+f+'&tl='+t+'&dt=t&q='+encodeURIComponent(text);const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();if(d&&d[0])return d[0].map(s=>s[0]).join('');throw new Error('empty')}
+return{detectLanguage:D,getLangName:N,translate:T,toLangCode:L,LANG_META:M}})();
+
+// ─── Cloud STT Module ──────────────────────
+const CloudSTT=(()=>{const D={sichuan:{name:'四川话',baiduPid:1637,iflytekAccent:'sichuanhua'},cantonese:{name:'粤语',baiduPid:1536,iflytekAccent:'cantonese'},shanghai:{name:'上海话',baiduPid:null,iflytekAccent:'shanghainese',note:'仅支持讯飞API'},henan:{name:'河南话',baiduPid:null,iflytekAccent:'henanhua',note:'仅支持讯飞API'}}
+function G(){try{return JSON.parse(localStorage.getItem('cloud-stt-config')||'{}')}catch(_){return{}}}
+function S(c){localStorage.setItem('cloud-stt-config',JSON.stringify(c))}
+function I(p){const c=G();if(p==='baidu')return!!(c.baiduApiKey&&c.baiduSecretKey);if(p==='iflytek')return!!(c.iflytekAppId&&c.iflytekApiKey&&c.iflytekApiSecret);return false}
+async function BA(ak,sk){const u='https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+encodeURIComponent(ak)+'&client_secret='+encodeURIComponent(sk);const r=await fetch(u,{method:'POST'});const d=await r.json();if(d.access_token)return d.access_token;throw new Error(d.error_description||'Baidu auth failed')}
+async function BR(blob,pid){const c=G();if(!c.baiduApiKey||!c.baiduSecretKey)throw new Error('baidu_not_configured');let t=BR._t;if(!t){t=await BA(c.baiduApiKey,c.baiduSecretKey);BR._t=t}
+const b64=await B2(blob);const body=new URLSearchParams();body.append('format','wav');body.append('rate','16000');body.append('channel','1');body.append('cuid','vt-app');body.append('token',t);body.append('dev_pid',String(pid));body.append('speech',b64);body.append('len',String(blob.size))
+const r=await fetch('https://vop.baidu.com/server_api',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()});const d=await r.json()
+if(d.err_no===0&&d.result&&d.result.length>0)return d.result.join('')
+if(d.err_no===3302){BR._t=null;t=await BA(c.baiduApiKey,c.baiduSecretKey);BR._t=t;body.set('token',t);const r2=await fetch('https://vop.baidu.com/server_api',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()});const d2=await r2.json();if(d2.err_no===0&&d2.result)return d2.result.join('')}
+throw new Error(d.err_msg||'Baidu STT error: '+d.err_no)}
+async function R(blob,dc){const d=D[dc];if(!d)throw new Error('Unknown dialect: '+dc);const c=G()
+if(d.baiduPid&&c.baiduApiKey&&c.baiduSecretKey)return await BR(blob,d.baiduPid)
+if(d.note)throw new Error(d.note);throw new Error('请先配置百度语音识别API Key')}
+function B2(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onloadend=()=>{resolve(r.result.split(',')[1])};r.onerror=reject;r.readAsDataURL(blob)})}
+return{DIALECTS:D,getConfig:G,saveConfig:S,isConfigured:I,recognize:R}})();
+
+// ─── Main App ──────────────────────────────
+const App=(()=>{const S=id=>document.getElementById(id),srcSel=S('sourceLang'),tgtSel=S('targetLang'),swapB=S('swapBtn'),srcTxt=S('sourceText'),tgtTxt=S('targetText'),detL=S('detectedLang'),trSt=S('translateStatus'),micB=S('micBtn'),micSt=S('micStatus'),spkB=S('speakBtn'),cpSrc=S('copySourceBtn'),cpTgt=S('copyTargetBtn'),clrH=S('clearHistoryBtn'),histL=S('historyList'),toast=S('toast'),dbgP=S('debugPanel'),dbgL=S('debugLog'),brwI=S('browserInfo'),apiS=S('apiSettings'),apiC=S('apiCloseBtn'),apiSv=S('apiSaveBtn'),apiSt=S('apiStatus'),bak=S('baiduApiKey'),bsk=S('baiduSecretKey'),txtIn=S('textInput'),txtSend=S('textSendBtn')
+let rec=null,active=false,listening=false,speaking=false,curSrc='',curTgt='',hist=[],dbgLn=[],mr=null,chunks=[],defP=null,voiceSel=S('voiceSel'),allVoices=[]
+let aCtx=null,analyser=null,mIv=null,mStream=null,avMics=[],mBar=S('meterBar'),mLbl=S('meterLabel'),mSel=S('micDeviceSelect')
+
+function dlog(lv,msg){dbgLn.push({lv,msg,time:Date.now()});if(dbgLn.length>50)dbgLn.shift();console.log('[VT]['+lv+'] '+msg);renderD()}
+function renderD(){if(!dbgL)return;dbgL.innerHTML=dbgLn.map(e=>'<div class="log-line '+e.lv+'">['+e.lv+'] '+esc(e.msg)+'</div>').join('');dbgL.scrollTop=dbgL.scrollHeight}
+
+// Audio Meter
+async function pML(){if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices)return
+try{let ts=null;try{ts=await navigator.mediaDevices.getUserMedia({audio:true})}catch(_){}
+const devs=await navigator.mediaDevices.enumerateDevices();avMics=devs.filter(d=>d.kind==='audioinput');mSel.innerHTML='<option value="">默认麦克风</option>'
+avMics.forEach((m,i)=>{const l=m.label||'麦克风 '+(i+1);const o=document.createElement('option');o.value=m.deviceId;o.textContent=l.length>25?l.substring(0,22)+'...':l;mSel.appendChild(o)})
+if(ts){ts.getTracks().forEach(t=>t.stop());ts=null}}catch(e){dlog('warn','枚举麦克风失败: '+e.message)}}
+mSel.addEventListener('change',()=>{sAM();sAM()})
+async function sAM(){try{const c={audio:true};const sid=mSel.value;if(sid)c.audio={deviceId:{exact:sid}}
+const stream=await navigator.mediaDevices.getUserMedia(c);mStream=stream;aCtx=new(window.AudioContext||window.webkitAudioContext)();analyser=aCtx.createAnalyser();analyser.fftSize=256;const src=aCtx.createMediaStreamSource(stream);src.connect(analyser);const da=new Uint8Array(analyser.frequencyBinCount);let hd=false
+mIv=setInterval(()=>{analyser.getByteFrequencyData(da);const avg=da.reduce((a,b)=>a+b,0)/da.length;const lv=Math.min(100,Math.round((avg/128)*100));mBar.style.width=lv+'%';mBar.classList.add('active')
+if(lv>=5&&!hd){hd=true;dlog('success','✅ 检测到声音信号！音量 '+lv+'%')}
+if(lv<5)mLbl.textContent='麦克风音量 (无声)';else if(lv<25)mLbl.textContent='麦克风音量 🔊 '+lv+'%';else mLbl.textContent='麦克风音量 🔊🔊 '+lv+'%'},80)}catch(e){dlog('error','getUserMedia 失败: '+e.name+' — '+e.message);mLbl.textContent='❌ 麦克风被拒绝/不可用';mBar.style.width='0%'
+if(e.name==='NotAllowedError'){dlog('error','麦克风权限被拒绝！请检查浏览器设置');showToast('请允许麦克风权限后刷新页面')}
+else if(e.name==='NotFoundError'){dlog('error','找不到麦克风设备');showToast('未检测到麦克风')}}}
+function eAM(){if(mIv){clearInterval(mIv);mIv=null}if(aCtx){aCtx.close();aCtx=null;analyser=null}if(mStream){mStream.getTracks().forEach(t=>t.stop());mStream=null}mBar.style.width='0%';mBar.classList.remove('active');mLbl.textContent='麦克风音量'}
+
+// PWA
+function regSW(){if('serviceWorker'in navigator){navigator.serviceWorker.register("data:application/javascript,"+encodeURIComponent("self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.clients.claim());self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})")).catch(()=>{})}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();defP=e;const b=S('installBtn');if(b){b.style.display='flex';b.onclick=()=>{defP.prompt();defP.userChoice.then(r=>{defP=null;b.style.display='none'})}}})
+window.addEventListener('appinstalled',()=>{defP=null;const b=S('installBtn');if(b)b.style.display='none'})
+
+// Init
+async function tryMic(){try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop());return true}catch(e){return false}}
+async function welFlow(){const ov=S('welcomeOverlay'),wt=S('welcomeTitle'),ws=S('welcomeSub'),wb=S('welcomeBtn');if(!ov)return
+const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition)
+if(!hasSR){wt.textContent='浏览器不支持语音';ws.innerHTML='请用<b>Chrome浏览器</b>打开此页面<br><br>微信内打开? 请点右上角<br>「在浏览器中打开」';wb.textContent='知道了';wb.onclick=()=>{ov.classList.add('hidden');setTimeout(()=>ov.remove(),500)};return}
+const already=await tryMic();if(already){ov.classList.add('hidden');setTimeout(()=>ov.remove(),500);return}
+wb.onclick=async()=>{wt.textContent='请点击「允许」';ws.innerHTML='手机上方弹出提示<br>请点击<b>「允许」</b>按钮';wb.style.display='none';const ok=await tryMic();if(ok){wt.textContent='✅ 设置完成！';ws.textContent='正在进入...';ov.classList.add('hidden');setTimeout(()=>ov.remove(),500)}else{wt.textContent='未获得麦克风权限';ws.innerHTML='请刷新页面重试<br>或下拉通知栏<br>找到麦克风权限并允许';wb.style.display='block';wb.textContent='重试'}}}
+function init(){if(window.matchMedia('(display-mode:standalone)').matches){const w=S('browserWarning');if(w)w.style.display='none'}
+detB();loadH();renderH();checkS();bindE();regSW()
+try{const m=document.createElement('link');m.rel='manifest';m.href='data:application/json,'+encodeURIComponent(JSON.stringify({name:'语音翻译助手',short_name:'翻译助手',start_url:location.href,display:'standalone',orientation:'portrait',background_color:'#F8FAFC',theme_color:'#4F46E5',lang:'zh-CN'}));document.head.appendChild(m)}catch(_){}
+welFlow();pML().then(()=>sAM());loadVoices();dlog('info','App 初始化完成')}
+function detB(){const ua=navigator.userAgent;let n='未知',c='warn',h='';if(ua.includes('Edg/')){n='Edge';c='ok';h='Edge 使用 Azure 语音服务，国内可用 ✅'}else if(ua.includes('Chrome/')&&!ua.includes('Edg/')){n='Chrome';c='warn';h='Chrome 走 Google 服务，国内可能被墙 ⚠️'}else if(ua.includes('Safari/')&&!ua.includes('Chrome/')){n='Safari';c='warn'}else if(ua.includes('Firefox/')){n='Firefox';c='error';h='Firefox 不支持 Web Speech API ❌'}
+brwI.textContent=n+' | '+location.protocol;brwI.className='debug-badge '+c;dlog('info','浏览器: '+n+', 协议: '+location.protocol);if(h)dlog(c==='ok'?'success':'warn',h)
+if(location.protocol==='file:'){dlog('error','❌ file:// 协议不支持语音识别！请通过 HTTPS 访问');micSt.textContent='❌ 请通过 HTTPS 链接打开此页面';micSt.style.color='#EF4444';micB.disabled=true;showToast('请将文件部署到 HTTPS 服务器后使用')}}
+function loadVoices(){allVoices=window.speechSynthesis?window.speechSynthesis.getVoices():[];const tl=tgtSel.value;const lc={en:'en',zhCN:'zh',ja:'ja',ko:'ko',fr:'fr',es:'es',de:'de',it:'it',pt:'pt',ru:'ru',ar:'ar',th:'th',vi:'vi',hi:'hi',nl:'nl',tr:'tr'};const pf=lc[tl]||'en';let opts='<option value="default">默认声音</option>';let hasMatch=false;allVoices.forEach((v,i)=>{const match=v.lang.toLowerCase().startsWith(pf);if(match){hasMatch=true;opts+='<option value="'+i+'">'+v.name+' ('+v.lang+')</option>'}});if(!hasMatch){allVoices.forEach((v,i)=>{opts+='<option value="'+i+'">'+v.name+' ('+v.lang+')</option>'})};voiceSel.innerHTML=opts;const saved=localStorage.getItem('vt-voice-'+tl);if(saved!==null&&voiceSel.querySelector('option[value="'+saved+'"]'))voiceSel.value=saved}
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=loadVoices}
+tgtSel.addEventListener('change',()=>{loadVoices()});voiceSel.addEventListener('change',()=>{localStorage.setItem('vt-voice-'+tgtSel.value,voiceSel.value)})
+function checkS(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){micB.disabled=true;micSt.textContent='⚠️ 浏览器不支持语音识别';micSt.style.color='#EF4444';dlog('error','SpeechRecognition API 不可用')}else{dlog('success','SpeechRecognition API ✓')}
+if(window.speechSynthesis)dlog('success','SpeechSynthesis API ✓');else dlog('warn','SpeechSynthesis 不可用')
+if(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices){navigator.mediaDevices.enumerateDevices().then(devs=>{const hm=devs.some(d=>d.kind==='audioinput');dlog(hm?'success':'warn',hm?'检测到麦克风设备':'未检测到麦克风设备')}).catch(()=>{dlog('warn','无法枚举音频设备')})}}
+function sendText(){const t=txtIn.value.trim();if(!t)return;curSrc=t;srcTxt.textContent=t;txtIn.value='';proc(t)}
+function bindE(){micB.addEventListener('click',toggle);swapB.addEventListener('click',swL);spkB.addEventListener('click',()=>{if(curTgt)spkA(curTgt,tgtSel.value)});cpSrc.addEventListener('click',()=>cpy(curSrc,'源文本'));cpTgt.addEventListener('click',()=>cpy(curTgt,'翻译结果'));clrH.addEventListener('click',clrHist);srcSel.addEventListener('change',onSrcCh);apiC.addEventListener('click',()=>{apiS.style.display='none'});apiSv.addEventListener('click',savApi);txtSend.addEventListener('click',sendText);txtIn.addEventListener('keydown',e=>{if(e.key==='Enter')sendText()});loadApi()}
+
+function isDial(){return srcSel.value.startsWith('dialect:')}
+function getDial(){if(!isDial())return null;return srcSel.value.replace('dialect:','')}
+function loadApi(){const c=CloudSTT.getConfig();if(c.baiduApiKey)bak.value=c.baiduApiKey;if(c.baiduSecretKey)bsk.value=c.baiduSecretKey}
+function savApi(){const c={baiduApiKey:bak.value.trim(),baiduSecretKey:bsk.value.trim()};CloudSTT.saveConfig(c);apiSt.textContent='✅ 已保存';apiSt.className='api-status ok';setTimeout(()=>{apiSt.textContent=''},2000)}
+function chkDial(){if(!isDial())return true;const d=getDial(),info=CloudSTT.DIALECTS[d];if(!info)return false;if(info.baiduPid&&CloudSTT.isConfigured('baidu'))return true;apiS.style.display='block';apiSt.textContent=info.note?('⚠️ '+info.note):'⚠️ 请先配置百度API';apiSt.className='api-status error';showToast('请先配置百度语音API Key');return false}
+
+// Mic
+function toggle(){if(active)stop();else start()}
+function start(){if(isDial()){if(!chkDial())return;sDR();return}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('请使用支持语音识别的浏览器');return}
+active=true;eAM();micB.classList.add('listening');micB.querySelector('.mic-icon').textContent='⏹️';micSt.textContent='🎤 正在聆听...';micSt.style.color='';dlog('info','START — 开始聆听循环');sOR()}
+function stop(){active=false;listening=false;micB.classList.remove('listening');micB.querySelector('.mic-icon').textContent='🎙️';micSt.textContent='点击开始录音';micSt.style.color='';if(mr&&mr.state==='recording')mr.stop();mr=null
+if(rec){try{rec.abort()}catch(_){}rec=null}if(window.speechSynthesis)window.speechSynthesis.cancel();speaking=false;dlog('info','STOP — 完全停止');sAM()}
+
+// Web Speech
+function sOR(){if(!active)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const r=new SR();r.continuous=false;r.interimResults=true;r.maxAlternatives=1;const sl=srcSel.value;if(sl!=='auto'){r.lang=sl;dlog('info','语言设置: '+sl)}else dlog('info','语言: 自动')
+let ft='',hha=false
+r.onstart=()=>{listening=true;dlog('success','麦克风已激活');micSt.textContent='🎤 正在聆听...';srcTxt.textContent='';srcTxt.classList.add('listening-indicator')}
+r.onsoundstart=()=>{hha=true;micSt.textContent='🔴 识别中...'}
+r.onspeechstart=()=>{micSt.textContent='🔴 识别中...'}
+r.onresult=ev=>{let im='';for(let i=ev.resultIndex;i<ev.results.length;i++){const rr=ev.results[i];if(rr.isFinal)ft+=rr[0].transcript;else im+=rr[0].transcript}
+const disp=ft+im;if(disp){srcTxt.textContent=disp;srcTxt.classList.remove('listening-indicator')}}
+r.onerror=ev=>{dlog('error','识别错误: '+ev.error)
+if(ev.error==='not-allowed'){micSt.textContent='❌ 麦克风权限被拒绝';showToast('请在浏览器设置中允许麦克风权限');stop();return}
+if(ev.error==='audio-capture'){micSt.textContent='❌ 无法访问麦克风';stop();return}
+if(ev.error==='no-speech')micSt.textContent='⚠️ 未检测到语音，重试中...'}
+r.onend=()=>{listening=false;srcTxt.classList.remove('listening-indicator')
+if(!active){rec=null;return}
+if(ft.trim()){curSrc=ft.trim();dlog('info','开始处理: "'+curSrc+'"');proc(curSrc)}else if(!hha){micSt.textContent='⚠️ 未检测到声音，重试中...';rec=null;setTimeout(()=>{if(active)sOR()},500)}else{micSt.textContent='🎤 继续聆听...';rec=null;sOR()}}
+rec=r
+try{r.start();dlog('success','recognition.start() 调用成功')}catch(e){dlog('error','recognition.start() 异常: '+e.message);listening=false;rec=null;if(active)setTimeout(()=>{if(active)sOR()},1000)}}
+
+// Dialect recording
+async function sDR(){try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});mr=new MediaRecorder(stream,{mimeType:'audio/webm'});chunks=[]
+mr.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)}
+mr.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());if(!active)return;micSt.textContent='🔄 云端识别中...';const blob=new Blob(chunks,{type:'audio/webm'})
+try{const dc=getDial();const txt=await CloudSTT.recognize(blob,dc);dlog('success','方言识别结果: "'+txt+'"')
+if(txt&&txt.trim()){curSrc=txt.trim();srcTxt.textContent=curSrc;proc(curSrc)}else{micSt.textContent='⚠️ 未识别到语音，重试中...';if(active)setTimeout(()=>sDR(),500)}}catch(e){dlog('error','方言识别失败: '+e.message)
+if(e.message==='baidu_not_configured'){apiS.style.display='block';showToast('请先配置百度API Key')}else showToast('识别失败: '+e.message)
+if(active){micSt.textContent='🎤 重试中...';setTimeout(()=>sDR(),800)}}}
+mr.start();active=true;eAM();micB.classList.add('listening');micB.querySelector('.mic-icon').textContent='⏹️';micSt.textContent='🔴 录音中 (方言)...'}catch(e){dlog('error','方言录音启动失败: '+e.message);showToast('无法启动录音');active=false}}
+
+// Process + Translate
+async function proc(txt){if(!active)return;micSt.textContent='🔄 翻译中...'
+let dl=srcSel.value;if(dl==='auto'){const d=Translator.detectLanguage(txt);if(d){dl=d;detL.textContent='检测到: '+Translator.getLangName(d)}else{dl='zh-CN';detL.textContent='默认: 中文'}}else detL.textContent=''
+dlog('info','检测到语言: '+dl)
+const tl=tgtSel.value;trSt.textContent='⏳';trSt.classList.add('translating')
+let tr='';try{tr=await Translator.translate(txt,dl,tl)}catch(e){tr='[翻译失败，请重试]'}
+trSt.textContent='↓';trSt.classList.remove('translating');curTgt=tr;tgtTxt.textContent=tr;dlog('success','翻译结果: "'+tr+'"')
+addH(txt,tr,dl,tl)
+if(active&&tr&&!tr.startsWith('[翻译失败')){micSt.textContent='🔊 朗读中...';speaking=true;await spkA(tr,tl);speaking=false}
+if(active){rec=null;micSt.textContent='🎤 继续聆听...';if(isDial())sDR();else sOR()}}
+
+// TTS
+function spkA(text,lang){return new Promise(resolve=>{if(!window.speechSynthesis){resolve();return}
+window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);const lm={en:'en-US','zh-CN':'zh-CN',ja:'ja-JP',ko:'ko-KR',fr:'fr-FR',es:'es-ES',de:'de-DE',it:'it-IT',pt:'pt-BR',ru:'ru-RU',ar:'ar-SA',th:'th-TH',vi:'vi-VN',hi:'hi-IN',nl:'nl-NL',tr:'tr-TR'};u.lang=lm[lang]||'en-US';u.rate=0.9;u.pitch=1;u.volume=1
+const vi=parseInt(voiceSel.value);if(vi>=0&&vi<allVoices.length&&allVoices[vi]){u.voice=allVoices[vi]}
+let rs=false;const d=()=>{if(!rs){rs=true;resolve()}};u.onend=d;u.onerror=d;setTimeout(d,15000);window.speechSynthesis.speak(u)})}
+
+// Swap
+function swL(){const sv=srcSel.value;if(sv==='auto')return
+const s2t={'zh-CN':'zh-CN','zh-HK':'zh-CN','zh-TW':'zh-CN','en-US':'en','ja-JP':'ja','ko-KR':'ko','fr-FR':'fr','es-ES':'es','de-DE':'de','it-IT':'it','pt-BR':'pt','ru-RU':'ru','ar-SA':'ar','th-TH':'th','vi-VN':'vi','hi-IN':'hi','nl-NL':'nl','tr-TR':'tr'}
+const t2s={'en':'en-US','zh-CN':'zh-CN',ja:'ja-JP',ko:'ko-KR',fr:'fr-FR',es:'es-ES',de:'de-DE',it:'it-IT',pt:'pt-BR',ru:'ru-RU',ar:'ar-SA',th:'th-TH',vi:'vi-VN',hi:'hi-IN',nl:'nl-NL',tr:'tr-TR'}
+srcSel.value=t2s[tgtSel.value]||'en-US';tgtSel.value=s2t[sv]||'en'
+if(active){if(rec){try{rec.abort()}catch(_){}rec=null}if(isDial()){if(mr&&mr.state==='recording')mr.stop();setTimeout(()=>{if(active)sDR()},300)}else setTimeout(()=>{if(active)sOR()},200)}
+showToast('语言已切换')}
+function onSrcCh(){detL.textContent='';if(isDial()&&!chkDial()){}else apiS.style.display='none'
+if(active){if(isDial()){if(mr&&mr.state==='recording')mr.stop();setTimeout(()=>{if(active)sDR()},300)}else{if(rec){try{rec.abort()}catch(_){}rec=null}setTimeout(()=>{if(active)sOR()},200)}}}
+
+// History
+function addH(s,t,sl,tl){hist.unshift({id:Date.now(),source:s,target:t,srcLang:Translator.getLangName(sl),tgtLang:Translator.getLangName(tl),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})});if(hist.length>50)hist=hist.slice(0,50);saveH();renderH()}
+function renderH(){if(!hist.length){histL.innerHTML='<div class="history-empty">暂无翻译记录</div>';return}
+histL.innerHTML=hist.map(e=>'<div class="history-item" data-id="'+e.id+'"><div class="hi-source">'+esc(e.source)+'</div><div class="hi-target">'+esc(e.target)+'</div><div class="hi-time">'+e.srcLang+' → '+e.tgtLang+' · '+e.time+'</div></div>').join('')
+histL.querySelectorAll('.history-item').forEach(el=>{el.addEventListener('click',()=>{const h=hist.find(x=>x.id===parseInt(el.dataset.id));if(h){curSrc=h.source;curTgt=h.target;srcTxt.textContent=h.source;tgtTxt.textContent=h.target;showToast('已加载翻译记录')}})})}
+function clrHist(){if(!hist.length)return;if(confirm('确定要清空所有翻译记录吗？')){hist=[];saveH();renderH();showToast('翻译记录已清空')}}
+function loadH(){try{hist=JSON.parse(localStorage.getItem('vt-history')||'[]')}catch(_){hist=[]}}
+function saveH(){try{localStorage.setItem('vt-history',JSON.stringify(hist))}catch(_){}}
+
+// Utils
+function cpy(t,l){if(!t){showToast('没有可复制的内容');return}
+if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>showToast(l+'已复制')).catch(()=>fc(t,l));else fc(t,l)}
+function fc(t,l){const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(l+'已复制')}catch(_){showToast('复制失败')};document.body.removeChild(ta)}
+function showToast(m){toast.textContent=m;toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),2000)}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+init()})()
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>语音翻译助手</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="翻译助手">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- transformers.js import map for offline inference -->
+  <!--   jsdelivr (default) – switch to unpkg if slow in your region -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@huggingface/transformers": "https://unpkg.com/@huggingface/transformers@3/dist/transformers.min.js"
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1>🌐 语音翻译助手</h1>
+      <div class="header-actions">
+        <span id="offlineIndicator" class="offline-indicator" title="离线状态">🔴</span>
+        <button id="installBtn" class="install-btn" title="安装到桌面" style="display:none;">📲</button>
+        <span class="mode-badge auto">自动</span>
+      </div>
+    </header>
+
+    <!-- Browser Warning (shown when needed) -->
+    <div id="browserWarning" class="browser-warning" style="display:none;">
+      <span class="warning-icon">⚠️</span>
+      <div class="warning-content">
+        <strong id="warningTitle"></strong>
+        <span id="warningMsg"></span>
+      </div>
+    </div>
+
+    <!-- Language Bar -->
+    <div class="lang-bar">
+      <div class="lang-item source">
+        <span class="lang-label">源语言</span>
+        <select id="sourceLang" class="lang-select">
+          <option value="auto">自动检测</option>
+          <optgroup label="中文">
+            <option value="zh-CN" selected>中文普通话</option>
+            <option value="zh-HK">粤语 (廣東話)</option>
+            <option value="zh-TW">中文台湾</option>
+          </optgroup>
+          <optgroup label="方言 (需配置API)">
+            <option value="dialect:sichuan">四川话 (百度API)</option>
+            <option value="dialect:cantonese">粤语方言 (百度API)</option>
+            <option value="dialect:henan">河南话 (需讯飞)</option>
+            <option value="dialect:shanghai">上海话 (需讯飞)</option>
+          </optgroup>
+          <optgroup label="常用语言">
+            <option value="en-US">English</option>
+            <option value="ja-JP">日本語</option>
+            <option value="ko-KR">한국어</option>
+            <option value="fr-FR">Français</option>
+            <option value="es-ES">Español</option>
+            <option value="de-DE">Deutsch</option>
+            <option value="it-IT">Italiano</option>
+            <option value="pt-BR">Português</option>
+            <option value="ru-RU">Русский</option>
+            <option value="ar-SA">العربية</option>
+            <option value="th-TH">ไทย</option>
+            <option value="vi-VN">Tiếng Việt</option>
+            <option value="hi-IN">हिन्दी</option>
+            <option value="nl-NL">Nederlands</option>
+            <option value="tr-TR">Türkçe</option>
+          </optgroup>
+        </select>
+      </div>
+      <button id="swapBtn" class="swap-btn" title="切换语言">⇄</button>
+      <div class="lang-item target">
+        <span class="lang-label">目标语言</span>
+        <select id="targetLang" class="lang-select">
+          <option value="en">English</option>
+          <option value="zh-CN">中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="ru">Русский</option>
+          <option value="ar">العربية</option>
+          <option value="th">ไทย</option>
+          <option value="vi">Tiếng Việt</option>
+          <option value="hi">हिन्दी</option>
+          <option value="nl">Nederlands</option>
+          <option value="tr">Türkçe</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+      <!-- Source Text -->
+      <div class="text-section source-section">
+        <div class="section-header">
+          <span class="section-title">🎤 识别结果</span>
+          <button id="copySourceBtn" class="icon-btn" title="复制">📋</button>
+        </div>
+        <div id="sourceText" class="text-display">
+          <span class="placeholder">点击下方麦克风开始说话...</span>
+        </div>
+        <div id="detectedLang" class="detected-lang"></div>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span id="translateStatus" class="divider-icon">↓</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Target Text -->
+      <div class="text-section target-section">
+        <div class="section-header">
+          <span class="section-title">📝 翻译结果</span>
+          <div class="section-actions">
+            <button id="speakBtn" class="icon-btn" title="朗读">🔊</button>
+            <button id="copyTargetBtn" class="icon-btn" title="复制">📋</button>
+          </div>
+        </div>
+        <div id="targetText" class="text-display">
+          <span class="placeholder">翻译将在这里显示...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Input (type to translate without voice) -->
+    <div class="text-input-section">
+      <div class="text-input-header">
+        <span>⌨️ 文字输入翻译</span>
+      </div>
+      <div class="text-input-row">
+        <input id="textInput" class="text-input-field" type="text" placeholder="在此输入文字，按回车翻译..." maxlength="500">
+        <button id="textTranslateBtn" class="text-translate-btn">翻译</button>
+      </div>
+    </div>
+
+    <!-- Offline Model Management -->
+    <div id="modelPanel" class="model-panel" style="display:none;">
+      <div class="model-panel-header">
+        <span>📦 离线模型管理</span>
+        <button id="modelPanelCloseBtn" class="icon-btn" title="关闭">✕</button>
+      </div>
+      <div id="modelStorageInfo" class="model-storage-info"></div>
+      <div id="modelCards" class="model-cards"></div>
+    </div>
+    <button id="modelPanelToggleBtn" class="model-panel-toggle">📦 管理离线模型</button>
+
+    <!-- Mic Button -->
+    <div class="mic-section">
+      <div id="micStatus" class="mic-status">点击开始录音</div>
+      <button id="micBtn" class="mic-btn" title="开始录音">
+        <span class="mic-icon">🎙️</span>
+      </button>
+      <div class="mic-hint">点击后说话，说完再次点击停止</div>
+
+      <!-- Audio Level Meter -->
+      <div class="audio-meter" id="audioMeter">
+        <div class="meter-bar" id="meterBar"></div>
+        <div class="meter-row">
+          <span class="meter-label" id="meterLabel">麦克风音量</span>
+          <select id="micDeviceSelect" class="mic-device-select">
+            <option value="">默认麦克风</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+      <div class="history-header">
+        <h3>📜 翻译记录</h3>
+        <button id="clearHistoryBtn" class="text-btn">清空</button>
+      </div>
+      <div id="historyList" class="history-list">
+        <div class="history-empty">暂无翻译记录</div>
+      </div>
+    </div>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+      <div class="debug-header">
+        <span>🔧 诊断信息</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="browserInfo" class="debug-badge"></span>
+          <button id="debugToggleBtn" class="debug-toggle-btn" title="折叠/展开">▾</button>
+        </div>
+      </div>
+      <div id="debugLog" class="debug-log"></div>
+    </div>
+
+    <!-- API Settings -->
+    <div class="api-settings" id="apiSettings" style="display:none;">
+      <div class="api-header">
+        <span>🔑 API 设置</span>
+        <button id="apiCloseBtn" class="icon-btn" title="关闭">✕</button>
+      </div>
+      <div class="api-body">
+        <p class="api-hint">方言识别需要百度语音API（免费5万次/天）</p>
+        <p class="api-hint">
+          1. 访问 <a href="https://console.bce.baidu.com/ai/#/ai/speech/overview/index" target="_blank">百度AI开放平台</a><br>
+          2. 创建应用 → 领取免费资源 → 获取 API Key 和 Secret Key
+        </p>
+        <label class="api-label">Baidu API Key</label>
+        <input id="baiduApiKey" class="api-input" placeholder="输入API Key..." autocomplete="off">
+        <label class="api-label">Baidu Secret Key</label>
+        <input id="baiduSecretKey" class="api-input" type="password" placeholder="输入Secret Key..." autocomplete="off">
+        <button id="apiSaveBtn" class="api-save-btn">💾 保存</button>
+        <span id="apiStatus" class="api-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/translator.js"></script>
+  <script src="js/cloud-stt.js"></script>
+  <script src="js/offline-engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
