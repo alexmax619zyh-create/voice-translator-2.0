@@ -72,10 +72,9 @@ const OfflineEngine = (() => {
     'hi-IN': 'hi', 'nl-NL': 'nl', 'tr-TR': 'tr',
   };
 
-  function getModelBaseUrl() {
-    // Models are co-located with the app on GitHub Pages
+  function getRepoRoot() {
     const base = location.pathname.replace(/\/[^/]*$/, '') || '';
-    return location.origin + base + '/models';
+    return location.origin + base;
   }
 
   // ── Import transformers.js (lazy, cached) ─────
@@ -88,12 +87,12 @@ const OfflineEngine = (() => {
         'https://unpkg.com/@huggingface/transformers@3/dist/';
 
       // Point model downloads to our own GitHub Pages (no external CDN!)
-      mod.env.remoteHost = getModelBaseUrl();
-      mod.env.remotePathTemplate = '{model}/{file}';
-      // Disable HF token requirement for public models
-      mod.env.useFSCache = false;
+      // URL pattern: {repoRoot}/models/{modelId}/{file}
+      // e.g. https://user.github.io/repo/models/zh-en/config.json
+      mod.env.remoteHost = getRepoRoot();
+      mod.env.remotePathTemplate = 'models/{model}/{file}';
 
-      console.log('[OfflineEngine] Configured — models:', mod.env.remoteHost);
+      console.log('[OfflineEngine] Configured — repo:', mod.env.remoteHost, 'template:', mod.env.remotePathTemplate);
 
       pipelineFn = mod.pipeline;
     }
@@ -120,9 +119,9 @@ const OfflineEngine = (() => {
   // ── Connectivity test ─────────────────────────
   async function testMirror() {
     const results = {};
-    const base = getModelBaseUrl();
+    const root = getRepoRoot();
     const urls = {
-      '本站(GitHub Pages)': base + '/zh-en/config.json',
+      '本站(GitHub Pages)': root + '/models/zh-en/config.json',
       'unpkg CDN': 'https://unpkg.com/@huggingface/transformers@3/package.json',
     };
     for (const [name, url] of Object.entries(urls)) {
@@ -160,7 +159,7 @@ const OfflineEngine = (() => {
     downloadStates[key] = { status: 'downloading', loaded: 0, total: pair.size * 1024 * 1024 };
 
     const pipe = await getPipeline();
-    const configUrl = getModelBaseUrl() + '/' + pair.modelId + '/config.json';
+    const configUrl = getRepoRoot() + '/models/' + pair.modelId + '/config.json';
     console.log('[OfflineEngine] Loading model, config URL:', configUrl);
 
     // Quick check: is the config file reachable?
@@ -283,7 +282,7 @@ const OfflineEngine = (() => {
     translateOffline,
     getStorageInfo,
     testMirror,
-    getModelBaseUrl,
+    getRepoRoot,
     supportsLocalSpeechRecognition,
     getChromeVersion,
   };
