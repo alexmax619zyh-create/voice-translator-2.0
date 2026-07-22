@@ -14,7 +14,7 @@ const FILES = [
   './js/translator.js',
   './js/cloud-stt.js',
   './js/offline-engine-v4.js',
-  './js/app.js',
+  './js/app-v4.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
