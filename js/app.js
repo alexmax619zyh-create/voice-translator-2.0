@@ -367,7 +367,7 @@ const App = (() => {
         try {
           const results = await OfflineEngine.testMirror();
           const summary = Object.entries(results)
-            .map(([k, v]) => `${k}: ${v === 'ok' ? '✅' : '❌ ' + v}`)
+            .map(([k, v]) => `${k}: ${v}`)
             .join(' | ');
           dlog('info', 'CDN 测速: ' + summary);
           showToast(summary);
