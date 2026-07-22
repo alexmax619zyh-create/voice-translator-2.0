@@ -68,8 +68,11 @@ const OfflineEngine = (() => {
   async function getPipeline() {
     if (!pipelineFn) {
       const mod = await import('@huggingface/transformers');
+      // Use Chinese mirror for fast model downloads in China.
+      // Remove this line if you're deploying outside China.
+      mod.env.remoteHost = 'https://hf-mirror.com';
       pipelineFn = mod.pipeline;
-      console.log('[OfflineEngine] transformers.js loaded');
+      console.log('[OfflineEngine] transformers.js loaded (mirror: hf-mirror.com)');
     }
     return pipelineFn;
   }
