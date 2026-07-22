@@ -1,5 +1,5 @@
 // Service Worker — caches all app files for offline/PWA use
-const CACHE = 'voice-translator-v4';
+const CACHE = 'voice-translator-v5';
 
 // CDN origins that host ML models (cache-first for offline use)
 const MODEL_CDNS = [
@@ -13,7 +13,7 @@ const FILES = [
   './css/style.css',
   './js/translator.js',
   './js/cloud-stt.js',
-  './js/offline-engine.js',
+  './js/offline-engine-v4.js',
   './js/app.js',
   './manifest.json',
   './icon-192.png',
