@@ -202,8 +202,19 @@ const OfflineEngine = (() => {
       if (onProgress) onProgress({ status: 'ready' });
       console.log('[OfflineEngine] Model ready:', pair.name);
     } catch (e) {
-      // If self-hosted fails, model files probably weren't uploaded yet
-      const msg = '模型文件未找到。请先将模型文件上传到 GitHub Pages 的 models/' + key + ' 目录。';
+      // Log the REAL error so we can debug
+      console.error('[OfflineEngine] Pipeline creation FAILED:', e);
+      console.error('[OfflineEngine] Error type:', e.constructor?.name);
+      console.error('[OfflineEngine] Error stack:', e.stack);
+      // Check for nested/wrapped errors
+      let inner = e;
+      while (inner) {
+        console.error('[OfflineEngine]   cause:', inner.message);
+        inner = inner.cause || inner.inner || null;
+      }
+
+      const realMsg = e.message || String(e);
+      const msg = '模型加载失败: ' + realMsg;
       downloadStates[key] = { status: 'error', message: msg };
       if (onProgress) onProgress({ status: 'error', message: msg });
       throw new Error(msg);
