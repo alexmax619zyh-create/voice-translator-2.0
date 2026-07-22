@@ -16,35 +16,35 @@ const OfflineEngine = (() => {
   const PAIRS = {
     'zh-en': {
       id: 'zh-en', name: '中 → 英', from: 'zh', to: 'en',
-      modelId: 'opus-mt-zh-en', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'zh-en', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-zh': {
       id: 'en-zh', name: '英 → 中', from: 'en', to: 'zh',
-      modelId: 'opus-mt-en-zh', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-zh', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-ja': {
       id: 'en-ja', name: '英 → 日', from: 'en', to: 'ja',
-      modelId: 'opus-mt-en-jap', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-ja', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-ko': {
       id: 'en-ko', name: '英 → 韩', from: 'en', to: 'ko',
-      modelId: 'opus-mt-en-ko', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-ko', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-fr': {
       id: 'en-fr', name: '英 → 法', from: 'en', to: 'fr',
-      modelId: 'opus-mt-en-fr', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-fr', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-es': {
       id: 'en-es', name: '英 → 西', from: 'en', to: 'es',
-      modelId: 'opus-mt-en-es', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-es', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-de': {
       id: 'en-de', name: '英 → 德', from: 'en', to: 'de',
-      modelId: 'opus-mt-en-de', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-de', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
     'en-ru': {
       id: 'en-ru', name: '英 → 俄', from: 'en', to: 'ru',
-      modelId: 'opus-mt-en-ru', task: 'translation', size: 80, sizeLabel: '~80 MB',
+      modelId: 'en-ru', task: 'translation', size: 80, sizeLabel: '~80 MB',
     },
   };
 
